@@ -1,0 +1,8 @@
+sonar.projectKey=LeVanchua_Lab5
+sonar.projectName=Prison Management System
+sonar.sources=.
+sonar.language=cpp
+sonar.cpp.file.suffixes=.cpp
+# Щоб пропустити build-wrapper для лабораторної:
+sonar.c.file.suffixes=-
+sonar.cpp.file.suffixes=-

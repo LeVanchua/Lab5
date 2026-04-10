@@ -1,0 +1,379 @@
+// Prison management system
+// username = admin
+// password = pass
+
+#include <iostream>
+#include <conio.h>
+#include <string>
+#include <windows.h>
+#include <fstream>
+#include <ctime>
+
+using namespace std;
+
+// Константи для усунення "магічних чисел" (рекомендація SonarQube)
+const int MAX_PRISONERS = 20;
+const int ATTEMPTS_LIMIT = 3;
+
+void FrontPage();
+void Date();
+void Time();
+
+class Prison
+{
+private:
+    // Ініціалізація масивів
+    string First_Name[MAX_PRISONERS] = { " " };
+    string Second_Name[MAX_PRISONERS];
+    string Gender[MAX_PRISONERS];
+    int CellNo[MAX_PRISONERS] = { 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010,
+                                  1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020 };
+    int Age[MAX_PRISONERS] = { 0 };
+    double Height[MAX_PRISONERS] = { 0.0 };
+    string Eyecolor[MAX_PRISONERS];
+    string Crime[MAX_PRISONERS];
+    int Punishmentmonths[MAX_PRISONERS] = { 0 };
+    int o = 0;
+
+public:
+    void SetData();
+    void Details();
+    void Afterlogin();
+    void Attendance();
+    void Release();
+    void SearchPrison();
+    void PrisonFile();
+    void Logout();
+    void Exit();
+    void Login();
+};
+
+void Prison::Logout()
+{
+    system("cls");
+    cout << "\n\n\n\n\n\n\t\t\t\t\tlogging out ";
+    for (int x = 0; x < 15; x++)
+    {
+        Sleep(100); // Рефакторинг: замість порожнього циклу for
+        cout << ".";
+    }
+    this->Login();
+}
+
+void Prison::Login()
+{
+    string Username = "";
+    string Password = "";
+    char Epwd = ' ';
+    int try1 = 0;
+
+    do
+    {
+        system("cls");
+        Time();
+        cout << "\n\n\n\n\n\n";
+        Sleep(200);
+
+        cout << "\t\t\t\t    ----------------------------------------\n";
+        cout << "\t\t\t\t    |    PRISON STATION MANAGEMENT SYSTEM  |\n";
+        cout << "\t\t\t\t    ----------------------------------------\n\n\n";
+
+        cout << "\t\t\t\t\tUsername : ";
+        cin >> Username;
+        cout << "\t\t\t\t\tPassword : ";
+
+        Password = "";
+        while (true)
+        {
+            Epwd = _getch();
+            if ((Epwd >= 'a' && Epwd <= 'z') || (Epwd >= 'A' && Epwd <= 'Z') || (Epwd >= '0' && Epwd <= '9'))
+            {
+                Password += Epwd;
+                cout << "*";
+            }
+            if (Epwd == '\b' && !Password.empty())
+            {
+                cout << "\b \b";
+                Password.pop_back();
+            }
+            if (Epwd == '\r')
+            {
+                break;
+            }
+        }
+
+        if (Username == "admin" && Password == "pass")
+        {
+            cout << "\n\n\t\t\t\tYou are accessed to the system!\n\n";
+            system("pause");
+            system("cls");
+            try1 = 4;
+            Afterlogin();
+        }
+        else
+        {
+            try1++;
+            system("cls");
+            cout << "\n\n\n\n\n\n\n\n\n\n\t\t\t\t\tAttempts remaining: " << ATTEMPTS_LIMIT - try1 << "\n\n";
+            system("pause");
+
+            if (try1 >= ATTEMPTS_LIMIT)
+            {
+                cout << "\t\t\t\tNo permission to enter the system!\n";
+                system("pause");
+                exit(0);
+            }
+        }
+    } while (try1 < ATTEMPTS_LIMIT);
+}
+
+void Prison::SetData()
+{
+    system("cls");
+    Time();
+    cout << "\t\t\t\t    -----------------------------------------------------\n";
+    cout << "\t\t\t\t    |          Enter basic information of prisoner      |\n";
+    cout << "\t\t\t\t    -----------------------------------------------------\n\n";
+
+    cout << "\t\t\t\t\tEnter first name : "; cin >> First_Name[o];
+    cout << "\t\t\t\t\tEnter second name : "; cin >> Second_Name[o];
+    cout << "\t\t\t\t\tEnter gender : "; cin >> Gender[o];
+    cout << "\t\t\t\t\tEnter age : "; cin >> Age[o];
+    cout << "\t\t\t\t\tEnter height : "; cin >> Height[o];
+    cout << "\t\t\t\t\tEnter eyecolor : "; cin >> Eyecolor[o];
+    cout << "\t\t\t\t\tEnter crime : "; cin >> Crime[o];
+    cout << "\t\t\t\t\tEnter punishment (months) : "; cin >> Punishmentmonths[o];
+
+    cout << "\n\n\t\t\t\t\tYour Cell No is " << CellNo[o] << "\n";
+    o++;
+
+    cout << "\n\t\t\t\t\tPress 1 to return : ";
+    int s = 0;
+    cin >> s;
+    if (s == 1) Afterlogin();
+}
+
+void Prison::Details()
+{
+    system("cls");
+    Time();
+    cout << "\t\t\t\t    -----------------------------------------------------\n";
+    cout << "\t\t\t\t    |                  Prisoner list                    |\n";
+    cout << "\t\t\t\t    -----------------------------------------------------\n";
+
+    int p = 0;
+    cout << "\n===========================================================================================================\n";
+    cout << "SR.\tNAME\t\tCell\tAge\tGen\tH\tEye\tCrime\tMonths\n";
+    cout << "===========================================================================================================\n";
+
+    for (int x = 0; x < MAX_PRISONERS; x++)
+    {
+        if (First_Name[x] != " ")
+        {
+            p++;
+            cout << p << "\t" << First_Name[x] << " " << Second_Name[x] << "\t" << CellNo[x]
+                << "\t" << Age[x] << "\t" << Gender[x] << "\t" << Height[x] << "\t" << Eyecolor[x]
+                    << "\t" << Crime[x] << "\t" << Punishmentmonths[x] << endl;
+        }
+    }
+
+    if (p == 0) cout << "\n\t\t\t\t\tNo prisoner Present\n";
+
+    cout << "\n\t\t\t\t\tPress 1 to return : ";
+    int s = 0; cin >> s;
+    if (s == 1) Afterlogin();
+}
+
+void Prison::Attendance()
+{
+    char ch = 'n';
+    do
+    {
+        system("cls");
+        Time();
+        cout << "\t\t\t\t    -----------------------------------------------------\n";
+        cout << "\t\t\t\t    |           Prisoner attendance maintainer          |\n";
+        cout << "\t\t\t\t    -----------------------------------------------------\n";
+
+        int count = 0;
+        for (int x = 0; x < MAX_PRISONERS; x++) if (First_Name[x] != " ") count++;
+
+        if (count > 0)
+        {
+            int l = 0;
+            cout << "\n\t\t\t\t\tEnter cell block (1001-1020) : ";
+            cin >> l;
+            int idx = l - 1001;
+            if (idx >= 0 && idx < MAX_PRISONERS && First_Name[idx] != " ") {
+                cout << "\n\t\t\t\t\tName : " << First_Name[idx] << " " << Second_Name[idx];
+                Punishmentmonths[idx]--;
+                cout << "\n\t\t\t\t\tPunishment remaining: " << Punishmentmonths[idx] << " months";
+            }
+            else {
+                cout << "\n\t\t\t\t\tInvalid Cell!";
+            }
+            cout << "\n\n\t\t\t\t\tAnother? (y/n): ";
+            cin >> ch;
+        }
+        else
+        {
+            cout << "\n\t\t\t\t\tNo prisoners present\n";
+            ch = 'n';
+        }
+    } while (ch == 'y');
+
+    cout << "\n\t\t\t\t\tPress 1 to return : ";
+    int s = 0; cin >> s;
+    if (s == 1) Afterlogin();
+}
+
+void Prison::Release()
+{
+    system("cls");
+    Time();
+    cout << "\t\t\t\t    -----------------------------------------------------\n";
+    cout << "\t\t\t\t    |                  Release prisoner                 |\n";
+    cout << "\t\t\t\t    -----------------------------------------------------\n";
+
+    int l = 0;
+    cout << "\n\t\t\t\t\tEnter cell block to release: ";
+    cin >> l;
+    int idx = l - 1001;
+
+    if (idx >= 0 && idx < MAX_PRISONERS && First_Name[idx] != " ") {
+        if (Punishmentmonths[idx] <= 0) {
+            cout << "\n\t\t\t\t\tReleasing " << First_Name[idx] << "...";
+            First_Name[idx] = " "; // Очищення
+            Sleep(1000);
+            cout << "\n\t\t\t\t\tReleased successfully!";
+        }
+        else {
+            cout << "\n\t\t\t\t\tNot ready for release yet!";
+        }
+    }
+    else {
+        cout << "\n\t\t\t\t\tInvalid or empty cell!";
+    }
+
+    cout << "\n\n\t\t\t\t\tPress 1 to return : ";
+    int s = 0; cin >> s;
+    if (s == 1) Afterlogin();
+}
+
+void Prison::SearchPrison()
+{
+    system("cls");
+    int CN = 0;
+    cout << "\t\t\t\t    ----------------------------------------\n";
+    cout << "\t\t\t\t    |              Search Menu             |\n";
+    cout << "\t\t\t\t    ----------------------------------------\n";
+    cout << "\n\t\t\t\tEnter cell ID (1001-1020): ";
+    cin >> CN;
+
+    int idx = CN - 1001;
+    if (idx >= 0 && idx < MAX_PRISONERS && First_Name[idx] != " ") {
+        cout << "\nFound: " << First_Name[idx] << " " << Second_Name[idx] << " | Crime: " << Crime[idx];
+    }
+    else {
+        cout << "\nNot found or empty cell.";
+    }
+
+    cout << "\n\n\t\t\t\tPress 1 to return : ";
+    int s = 0; cin >> s;
+    if (s == 1) Afterlogin();
+}
+
+void Prison::PrisonFile()
+{
+    system("cls");
+    int format = 0;
+    cout << "\n\t\t\t\t1) TXT | 2) HTML | 3) DOC\n\t\t\t\tChoice: ";
+    cin >> format;
+
+    ofstream MyFile;
+    if (format == 1) MyFile.open("Prison_Data.txt");
+    else if (format == 2) MyFile.open("Prison_Data.html");
+    else MyFile.open("Prison_Data.doc");
+
+    MyFile << "Prisoner List Export\n";
+    for (int i = 0; i < MAX_PRISONERS; i++) {
+        if (First_Name[i] != " ") {
+            MyFile << First_Name[i] << " " << Second_Name[i] << " | Cell: " << CellNo[i] << "\n";
+        }
+    }
+    MyFile.close();
+    cout << "\n\t\t\t\tFile created successfully!\n";
+    system("pause");
+    Afterlogin();
+}
+
+void Prison::Afterlogin()
+{
+    int choice = 0;
+    while (true) {
+        system("cls");
+        Time();
+        cout << "\n\t\t\t\t1. Entry | 2. Details | 3. Attendance | 4. Release\n";
+        cout << "\t\t\t\t5. Search | 6. File | 7. Logout | 8. Exit\n";
+        cout << "\n\t\t\t\tChoice: ";
+        cin >> choice;
+
+        if (choice == 1) SetData();
+        else if (choice == 2) Details();
+        else if (choice == 3) Attendance();
+        else if (choice == 4) Release();
+        else if (choice == 5) SearchPrison();
+        else if (choice == 6) PrisonFile();
+        else if (choice == 7) { Logout(); break; }
+        else if (choice == 8) { Exit(); break; }
+    }
+}
+
+void Prison::Exit()
+{
+    system("cls");
+    cout << "\n\n\t\t\t\tThank you!!\n";
+    _getch();
+    exit(0);
+}
+
+void Date()
+{
+    time_t T = time(NULL);
+    struct tm tm_info;
+    localtime_s(&tm_info, &T); // Рефакторинг: безпечна версія
+    cout << "\n\t\t\t\tDate: " << tm_info.tm_mday << "/" << tm_info.tm_mon + 1 << "/" << tm_info.tm_year + 1900 << "\n";
+}
+
+void Time()
+{
+    time_t curr_time = time(NULL);
+    struct tm tm_local;
+    localtime_s(&tm_local, &curr_time);
+    cout << "Time : " << tm_local.tm_hour << ":" << tm_local.tm_min << ":" << tm_local.tm_sec << endl;
+}
+
+void FrontPage()
+{
+    system("cls");
+    Time();
+    Date();
+    cout << "\n\t\t\t\t    ----------------------------------------\n";
+    cout << "\t\t\t\t    |    PRISON STATION MANAGEMENT SYSTEM  |\n";
+    cout << "\t\t\t\t    ----------------------------------------\n\n";
+    cout << "\t\t\t\tMini Project : Prison Management System\n\n";
+    system("pause");
+    cout << "\n\t\t\t\tLoading";
+    for (int i = 0; i < 10; i++) {
+        Sleep(150);
+        cout << ".";
+    }
+}
+
+int main()
+{
+    Prison system_obj;
+    FrontPage();
+    system_obj.Login();
+    return 0;
+}
